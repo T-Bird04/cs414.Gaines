@@ -1,0 +1,378 @@
+[4mDUNE-EXEC[24m(1)                      Dune Manual                     [4mDUNE-EXEC[24m(1)
+
+[1mNAME[0m
+       dune-exec - Execute a command in a similar environment as if
+       installation was performed.
+
+[1mSYNOPSIS[0m
+       [1mdune exec [22m[[4mOPTION[24m]… [4mPROG[24m [[4mARGS[24m]…
+
+[1mDESCRIPTION[0m
+       [1mdune exec -- COMMAND [22mshould behave in the same way as if you do:
+
+         $ dune install
+         $ COMMAND
+
+       In particular if you run [1mdune exec ocaml[22m, you will have access to the
+       libraries defined in the workspace using your usual directives
+       ([1m#require [22mfor instance)
+
+       When a leading / is present in the command (absolute path), then the
+       path is interpreted as an absolute path
+
+       When a / is present at any other position (relative path), then the
+       path is interpreted as relative to the build context + current working
+       directory (or the value of [1m--root [22mwhen ran outside of the project root)
+
+[1mOPTIONS[0m
+       [1m--action-stderr-on-success[22m=[4mVAL[0m
+           Same  as  [1m--action-stdout-on-success [22mbut for standard error instead
+           of standard output. A good default for large  mono-repositories  is
+           [1m--action-stdout-on-success=swallow[0m
+           [1m--action-stderr-on-success=must-be-empty[22m.   This   ensures  that  a
+           successful build has a "clean" empty output.
+
+       [1m--action-stdout-on-success[22m=[4mVAL[0m
+           Specify how to deal with the standard output of actions  when  they
+           succeed.  Possible  values  are:  [1mprint  [22mto just print it to Dune's
+           output, [1mswallow  [22mto  completely  ignore  it  and  [1mmust-be-empty  [22mto
+           enforce  that  the action printed nothing. With [1mmust-be-empty[22m, Dune
+           will consider that the action failed if it printed something to its
+           standard output. The default is [1mprint[22m.
+
+       [1m--build-info[0m
+           Show build information.
+
+       [1m--context[22m=[4mCONTEXT[24m (absent=[1mdefault[22m)
+           Run the command in this build context.
+
+       [1m--display-separate-messages[0m
+           Separate error messages with a blank line.
+
+       [1m--error-reporting[22m=[4mVAL[24m (absent=[1mearly[22m)
+           Controls when the build errors are reported. [1mearly  [22mreports  errors
+           as soon as they are discovered. [1mdeterministic [22mreports errors at the
+           end of the build in a deterministic order. [1mtwice [22mreports each error
+           twice:  once  as  soon as the error is discovered and then again at
+           the end of the build, in a deterministic order.
+
+       [1m-f[22m, [1m--force[0m
+           Force actions associated to aliases to be re-executed even if their
+           dependencies haven't changed.
+
+       [1m--file-watcher[22m=[4mVAL[24m (absent=[1mautomatic[22m)
+           Mechanism to detect changes in the source. Automatic to  make  dune
+           run  an  external  program to detect changes. Manual to notify dune
+           that files have changed manually.
+
+       [1m--no-build[0m
+           don't rebuild target before executing
+
+       [1m--passive-watch-mode[0m
+           Similar to [--watch],  but  only  start  a  build  when  instructed
+           externally by an RPC.
+
+       [1m--react-to-insignificant-changes[0m
+           React to insignificant file system changes; this is only useful for
+           benchmarking dune.
+
+       [1m--sandbox[22m=[4mVAL[24m (absent [1mDUNE_SANDBOX [22menv)
+           Set  sandboxing  mode.  Some  actions  require a certain sandboxing
+           mode, so they will ignore this setting.  The  allowed  values  are:
+           none, symlink, copy, hardlink.
+
+       [1m--stop-on-first-error[0m
+           Stop the build as soon as an error is encountered.
+
+       [1m-w[22m, [1m--watch[0m
+           Instead  of  terminating  build after completion, wait continuously
+           for file changes.
+
+       [1m--wait-for-filesystem-clock[0m
+           Dune digest file contents for better incrementally.  These  digests
+           are  themselves  cached.  In  some  cases,  Dune needs to drop some
+           digest cache entries in order  for  things  to  be  reliable.  This
+           option makes Dune wait for the file system clock to advance so that
+           it  doesn't  need  to  drop  anything. You should probably not care
+           about this option; it is mostly useful for Dune developers to  make
+           Dune tests of the digest cache more reproducible.
+
+[1mCOMMON OPTIONS[0m
+       These options are common to all commands.
+
+       [1m--always-show-command-line[0m
+           Always show the full command lines of programs executed by dune.
+
+       [1m--auto-promote[0m
+           Automatically  promote  files.  This  is  similar  to  running [1mdune[0m
+           [1mpromote [22mafter the build.
+
+       [1m--build-dir[22m=[4mFILE[24m (absent [1mDUNE_BUILD_DIR [22menv)
+           Specified build directory. _build if unspecified
+
+       [1m--cache[22m=[4mVAL[24m (absent [1mDUNE_CACHE [22menv)
+           Enable or disable Dune cache (either [1menabled [22mor [1mdisabled[22m).  Default
+           is `disabled'.
+
+       [1m--cache-check-probability[22m=[4mVAL[24m (absent [1mDUNE_CACHE_CHECK_PROBABILITY [22menv)
+           Check  build  reproducibility by re-executing randomly chosen rules
+           and comparing their results with those stored in Dune cache.  Note:
+           by  increasing  the  probability  of  such checks you slow down the
+           build. The default probability is zero, i.e. no rules are checked.
+
+       [1m--cache-storage-mode[22m=[4mVAL[24m (absent [1mDUNE_CACHE_STORAGE_MODE [22menv)
+           Dune cache storage mode (one of [1mauto[22m, [1mhardlink [22mor [1mcopy[22m). Default is
+           `auto'.
+
+       [1m--config-file[22m=[4mFILE[0m
+           Load this configuration file instead of the default one.
+
+       [1m--debug-artifact-substitution[0m
+           Print debugging info about artifact substitution
+
+       [1m--debug-backtraces[0m
+           Always print exception backtraces.
+
+       [1m--debug-cache[22m=[4mVAL[0m
+           Show debug messages on cache misses for  the  given  cache  layers.
+           Value is a comma-separated list of cache layer names. All available
+           cache layers: shared,workspace-local,fs.
+
+       [1m--debug-dependency-path[0m
+           In case of error, print the dependency path from the targets on the
+           command line to the rule that failed.
+
+       [1m--debug-digests[0m
+           Explain why Dune decides to re-digest some files
+
+       [1m--debug-load-dir[0m
+           Print debugging info about directory loading
+
+       [1m--debug-store-digest-preimage[0m
+           Store  digest  preimage  for  all  computed  digests,  so that it's
+           possible to reverse them later,  for  debugging.  The  digests  are
+           stored  in  the  shared cache (see --cache flag) as values, even if
+           cache  is  otherwise  disabled.  This  should  be  used  only   for
+           debugging, since it's slow and it litters the shared cache.
+
+       [1m--default-target[22m=[4mTARGET[24m (absent=[1m@@default[22m)
+           Set  the default target that is used when none is specified to [1mdune[0m
+           [1mbuild[22m.
+
+       [1m--diff-command[22m=[4mVAL[24m (absent [1mDUNE_DIFF_COMMAND [22menv)
+           Shell command to use to diff files. Use - to disable  printing  the
+           diff.
+
+       [1m--disable-promotion [22m(absent [1mDUNE_DISABLE_PROMOTION [22menv)
+           Disable all promotion rules
+
+       [1m--display[22m=[4mMODE[0m
+           Control  the  display  mode  of  Dune.  See [1mdune-config(5) [22mfor more
+           details. Valid values for this option are progress, verbose, short,
+           quiet or tui.
+
+       [1m--dump-gc-stats[22m=[4mFILE[0m
+           Dump the garbage collector stats to  a  file  after  the  build  is
+           complete.
+
+       [1m--dump-memo-graph[22m=[4mFILE[0m
+           Dump the dependency graph to a file after the build is complete.
+
+       [1m--dump-memo-graph-format[22m=[4mFORMAT[24m (absent=[1mgexf[22m)
+           Set the file format used by [1m--dump-memo-graph[0m
+
+       [1m--dump-memo-graph-with-timing[0m
+           Re-run  each  cached  node  in  the  Memo  graph after building and
+           include the run duration in the output of [1m--dump-memo-graph[22m.  Since
+           all  nodes  contain  a  cached  value,  each  measurement will only
+           account for a single node.
+
+       [1m--help[22m[=[4mFMT[24m] (default=[1mauto[22m)
+           Show this help in format [4mFMT[24m. The value [4mFMT[24m must be  one  of  [1mauto[22m,
+           [1mpager[22m,  [1mgroff  [22mor  [1mplain[22m.  With  [1mauto[22m, the format is [1mpager [22mor [1mplain[0m
+           whenever the [1mTERM [22menv var is [1mdumb [22mor undefined.
+
+       [1m--ignore-lock-dir[0m
+           Ignore dune.lock/ directory.
+
+       [1m--ignore-promoted-rules[0m
+           Ignore rules with (mode promote), except ones with (only ...).  The
+           variable  %{ignoring_promoted_rules} in dune files reflects whether
+           this option was passed or not.
+
+       [1m--instrument-with[22m=[4mBACKENDS[24m (absent [1mDUNE_INSTRUMENT_WITH [22menv)
+           Enable instrumentation by [1mBACKENDS[22m. [1mBACKENDS [22mis  a  comma-separated
+           list   of  library  names,  each  one  of  which  must  declare  an
+           instrumentation backend.
+
+       [1m-j [4m[22mJOBS[0m
+           Run no more than [4mJOBS[24m commands simultaneously.
+
+       [1m--no-buffer[0m
+           Do not buffer the output of commands executed by dune.  By  default
+           dune  buffers  the  output  of  subcommands,  in  order  to prevent
+           interleaving when  multiple  commands  are  executed  in  parallel.
+           However,  this  can  be an issue when debugging long running tests.
+           With [1m--no-buffer[22m, commands have direct access to the terminal. Note
+           that as a result their output won't be captured in  the  log  file.
+           You  should  use  this  option  in  conjunction with [1m-j 1[22m, to avoid
+           interleaving. Additionally you should use  [1m--verbose  [22mas  well,  to
+           make sure that commands are printed before they are being executed.
+
+       [1m--no-config[0m
+           Do not load the configuration file
+
+       [1m--no-print-directory[0m
+           Suppress "Entering directory" messages.
+
+       [1m--only-packages[22m=[4mPACKAGES[0m
+           Ignore  stanzas  referring  to  a  package that is not in [1mPACKAGES[22m.
+           [1mPACKAGES [22mis a comma-separated list of package names. Note that this
+           has the same effect as deleting  the  relevant  stanzas  from  dune
+           files.  It  is mostly meant for releases. During development, it is
+           likely that  what  you  want  instead  is  to  build  a  particular
+           [1m<package>.install [22mtarget.
+
+       [1m-p [4m[22mPACKAGES[24m, [1m--for-release-of-packages[22m=[4mPACKAGES[24m (required)
+           Shorthand  for [1m--release --only-packages PACKAGE[22m. You must use this
+           option in your [4m<package>.opam[24m files, in order to build only  what's
+           necessary  when  your project contains multiple packages as well as
+           getting reproducible builds.
+
+       [1m--print-metrics[0m
+           Print out various performance metrics after every build.
+
+       [1m--profile[22m=[4mVAL[24m (absent [1mDUNE_PROFILE [22menv)
+           Select the build profile, for instance [1mdev [22mor [1mrelease[22m. The  default
+           is [1mdev[22m.
+
+       [1m--promote-install-files[22m[=[4mVAL[24m] (default=[1mtrue[22m)
+           Promote any generated <package>.install files to the source tree.
+
+       [1m--release[0m
+           Put  [1mdune  [22minto a reproducible [4mrelease[24m mode. Shorthand for [1m--root .[0m
+           [1m--ignore-promoted-rules     --no-config      --profile      release[0m
+           [1m--always-show-command-line                  --promote-install-files[0m
+           [1m--require-dune-project-file   --ignore-lock-dir    --default-target[0m
+           [1m@install[22m.  You  should  use  this  option  for  release builds. For
+           instance, you must use this option in  your  [4m<package>.opam[24m  files.
+           Except if you already use [1m-p[22m, as [1m-p [22mimplies this option.
+
+       [1m--require-dune-project-file[22m[=[4mVAL[24m] (default=[1mtrue[22m)
+           Fail if a dune-project file is missing.
+
+       [1m--root[22m=[4mDIR[0m
+           Use  this  directory as workspace root instead of guessing it. Note
+           that this option doesn't change the interpretation of targets given
+           on the command line. It is only intended for scripts.
+
+       [1m--store-orig-source-dir [22m(absent [1mDUNE_STORE_ORIG_SOURCE_DIR [22menv)
+           Store original source location in dune-package metadata.
+
+       [1m--terminal-persistence[22m=[4mMODE[0m
+           Change how the log of build results are displayed  to  the  console
+           between  rebuilds while in [1m--watch [22mmode. Supported modes: [1mpreserve[22m,
+           [1mclear-on-rebuild[22m, [1mclear-on-rebuild-and-flush-history[22m.
+
+       [1m--trace-extended[0m
+           Output extended trace data (requires trace-file).
+
+       [1m--trace-file[22m=[4mFILE[0m
+           Output   trace   data   in   catapult   format   (compatible   with
+           chrome://tracing).
+
+       [1m--verbose[0m
+           Same as [1m--display verbose[0m
+
+       [1m--version[0m
+           Show version information.
+
+       [1m--watch-exclusions[22m=[4mREGEX[0m
+           Adds   a  POSIX  regular  expression  that  will  exclude  matching
+           directories    from    [1m`dune    build    --watch`[22m.    The    option
+           [1m--watch-exclusions  [22mcan  be  repeated  to  add multiple exclusions.
+           Semicolons can be also used as a separator. If  no  exclusions  are
+           provided,  then  a  standard set of exclusions is used; however, if
+           [4mone[24m [4mor[24m [4mmore[24m [1m--watch-exclusions  [22mare  used,  [1mnone  [22mof  the  standard
+           exclusions  are  used.  The  standard exclusions are: ^_opam /_opam
+           ^_esy /_esy ^\.#.* /\.#.*  ~$  ^#[^#]*#$  /#[^#]*#$  ^4913$  /4913$
+           /.git /.hg :/windows
+
+       [1m--workspace[22m=[4mFILE[24m (absent [1mDUNE_WORKSPACE [22menv)
+           Use this specific workspace file instead of looking it up.
+
+       [1m-x [4m[22mVAL[0m
+           Cross-compile using this toolchain.
+
+[1mMORE HELP[0m
+       Use `[1mdune [4m[22mCOMMAND[24m --help' for help on a single command.
+
+[1mEXIT STATUS[0m
+       [1mdune exec [22mexits with:
+
+       0   on success.
+
+       1   if an error happened.
+
+       130 if it was interrupted by a signal.
+
+[1mENVIRONMENT[0m
+       These environment variables affect the execution of [1mexec[22m:
+
+       [1mDUNE_BUILD_DIR[0m
+           Specified build directory. _build if unspecified
+
+       [1mDUNE_CACHE[0m
+           Enable  or disable Dune cache (either [1menabled [22mor [1mdisabled[22m). Default
+           is `disabled'.
+
+       [1mDUNE_CACHE_CHECK_PROBABILITY[0m
+           Check build reproducibility by re-executing randomly  chosen  rules
+           and  comparing their results with those stored in Dune cache. Note:
+           by increasing the probability of such  checks  you  slow  down  the
+           build. The default probability is zero, i.e. no rules are checked.
+
+       [1mDUNE_CACHE_STORAGE_MODE[0m
+           Dune cache storage mode (one of [1mauto[22m, [1mhardlink [22mor [1mcopy[22m). Default is
+           `auto'.
+
+       [1mDUNE_DIFF_COMMAND[0m
+           Shell  command  to use to diff files. Use - to disable printing the
+           diff.
+
+       [1mDUNE_DISABLE_PROMOTION[0m
+           Disable all promotion rules
+
+       [1mDUNE_INSTRUMENT_WITH[0m
+           Enable instrumentation by [1mBACKENDS[22m. [1mBACKENDS [22mis  a  comma-separated
+           list   of  library  names,  each  one  of  which  must  declare  an
+           instrumentation backend.
+
+       [1mDUNE_PROFILE[0m
+           Build profile. [1mdev [22mif unspecified or [1mrelease [22mif -p is set.
+
+       [1mDUNE_SANDBOX[0m
+           Sandboxing mode to use by default. (see --sandbox)
+
+       [1mDUNE_STORE_ORIG_SOURCE_DIR[0m
+           Store original source location in dune-package metadata.
+
+       [1mDUNE_WORKSPACE[0m
+           Use this specific workspace file instead of looking it up.
+
+[1mBUGS[0m
+       Check bug reports at https://github.com/ocaml/dune/issues
+
+[1mSEE ALSO[0m
+       dune(1)
+
+[1mEXAMPLES[0m
+       1.  Run the executable named `my_exec':
+
+             dune exec my_exec
+
+       2.  Run the executable defined in `foo.ml' with the argument `arg':
+
+             dune exec -- ./foo.exe arg
+
+Dune 3.14.0                                                       [4mDUNE-EXEC[24m(1)
