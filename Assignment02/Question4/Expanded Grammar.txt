@@ -1,0 +1,23 @@
+Expr   → Expr + Term
+       | Expr - Term
+       | Term
+
+Term   → Term * Factor
+       | Term / Factor
+       | Factor
+
+Factor → ( Expr )
+       | number
+       | identifier
+       | +number
+       | -number
+
+
+
+       (*)
+       /  \
+      ()  4
+     /  \
+    3  (+)
+       / \       
+      -   3
