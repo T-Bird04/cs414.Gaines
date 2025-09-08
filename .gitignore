@@ -34,7 +34,7 @@ auto/
 dist/
 
 # bin folders
-bin/
+# bin/
 
 # Flycheck
 flycheck_*.el
